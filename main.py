@@ -62,8 +62,7 @@ class Healer(Character):
 
 def choice_char_class(char_name: str) -> Character:
     """
-    Возвращает строку с выбранным
-    классом персонажа.
+    Возвращает экземпляр выбранного класса персонажа.
     """
     # Добавили словарь, в котором соотносится ввод пользователя и класс персонажа.
     game_classes = {'warrior': Warrior, 'mage': Mage, 'healer': Healer}
@@ -73,13 +72,16 @@ def choice_char_class(char_name: str) -> Character:
     while approve_choice != 'y':
         selected_class = input('Введи название персонажа, '
                            'за которого хочешь играть: Воитель — warrior, '
-                           'Маг — mage, Лекарь — healer: ').lower()
+                           'Маг — mage, Лекарь — healer: ').strip().lower()
+        if selected_class not in game_classes:
+            print('Неизвестный класс. Выбери warrior, mage или healer.')
+            continue
         char_class: Character = game_classes[selected_class](char_name)
         # Вывели в терминал описание персонажа.
         print(char_class)
         approve_choice = input('Нажми (Y), чтобы подтвердить выбор, '
                                'или любую другую кнопку, '
-                               'чтобы выбрать другого персонажа ').lower()
+                               'чтобы выбрать другого персонажа ').strip().lower()
     return char_class
 
 def start_training(character):
@@ -99,16 +101,18 @@ def start_training(character):
                 "special": character.special
                 }
     while cmd != 'skip':
-        cmd = input('Введи команду: ')
+        cmd = input('Введи команду: ').strip().lower()
         if cmd in commands:
             print(commands[cmd]())
+        elif cmd != 'skip':
+            print('Неизвестная команда. Выбери attack, defence, special или skip.')
     return 'Тренировка окончена.'
 
 if __name__ == '__main__':
     run_screensaver()
     print('Приветствую тебя, искатель приключений!')
     print('Прежде чем начать игру...')
-    char_name: str = input('...назови себя: ')
+    char_name: str = input('...назови себя: ').strip() or 'Искатель'
     print(f'Здравствуй, {char_name}! '
           'Сейчас твоя выносливость — 80, атака — 5 и защита — 10.')
     print('Ты можешь выбрать один из трёх путей силы:')
